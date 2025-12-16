@@ -6,7 +6,7 @@
   <title>Menstrual Cycle Dashboard</title>
   <style>
     body { font-family: Arial, sans-serif; background:#f7f7fb; padding:40px; }
-    .card { max-width:500px; background:#fff; padding:24px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); }
+    .card { max-width:520px; background:#fff; padding:24px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); }
     h1 { font-size:20px; margin-bottom:20px; }
     label { display:block; margin-top:12px; font-weight:bold; }
     input { width:100%; padding:8px; margin-top:6px; border-radius:6px; border:1px solid #ccc; }
@@ -22,67 +22,99 @@
     <h1>Menstrual Cycle Dashboard</h1>
 
     <label>Previous Cycle Start Date (auto-filled)</label>
-    <input type="date" id="prevDate" value="2025-12-16" disabled />
+    <input type="date" id="prevDate" disabled />
 
     <label>Current Cycle Start Date</label>
     <input type="date" id="currentDate" />
 
-    <p style="margin-top:16px;">Cycle Length: <span id="length">—</span></p>
-    <p>Typical Range (21–35 days): <span id="range">—</span></p>
+    
+    <p>Average Cycle Length: <strong><span id="avg">—</span> days</strong></p>
+    <p>Predicted Next Cycle Start: <strong><span id="next">—</span></strong></p>
 
     <h3>History</h3>
     <table>
       <thead>
         <tr><th>Cycle Start</th><th>Length</th><th>Typical</th></tr>
       </thead>
-      <tbody id="historyBody">
-        <tr><td>2025-12-16</td><td>33</td><td class="good">Yes</td></tr>
-        <tr><td>2025-11-13</td><td>26</td><td class="good">Yes</td></tr>
-        <tr><td>2025-10-18</td><td>31</td><td class="good">Yes</td></tr>
-        <tr><td>2025-09-17</td><td>35</td><td class="good">Yes</td></tr>
-        <tr><td>2025-08-13</td><td>30</td><td class="good">Yes</td></tr>
-        <tr><td>2025-07-14</td><td>24</td><td class="good">Yes</td></tr>
-        <tr><td>2025-06-20</td><td>26</td><td class="good">Yes</td></tr>
-        <tr><td>2025-05-25</td><td>32</td><td class="good">Yes</td></tr>
-        <tr><td>2025-04-23</td><td>27</td><td class="good">Yes</td></tr>
-        <tr><td>2025-03-27</td><td>32</td><td class="good">Yes</td></tr>
-        <tr><td>2025-02-23</td><td>26</td><td class="good">Yes</td></tr>
-        <tr><td>2025-01-28</td><td>25</td><td class="good">Yes</td></tr>
-        <tr><td>2025-01-03</td><td>30</td><td class="good">Yes</td></tr>
-        <tr><td>2024-12-04</td><td>28</td><td class="good">Yes</td></tr>
-        <tr><td>2024-11-06</td><td>31</td><td class="good">Yes</td></tr>
-        <tr><td>2024-10-06</td><td>24</td><td class="good">Yes</td></tr>
-        <tr><td>2024-09-12</td><td>26</td><td class="good">Yes</td></tr>
-        <tr><td>2024-08-17</td><td>27</td><td class="good">Yes</td></tr>
-        <tr><td>2024-07-21</td><td>29</td><td class="good">Yes</td></tr>
-        <tr><td>2024-06-22</td><td>24</td><td class="good">Yes</td></tr>
-        <tr><td>2024-05-29</td><td>33</td><td class="good">Yes</td></tr>
-        <tr><td>2024-04-26</td><td>31</td><td class="good">Yes</td></tr>
-        <tr><td>2024-03-26</td><td>28</td><td class="good">Yes</td></tr>
-        <tr><td>2024-02-27</td><td>30</td><td class="good">Yes</td></tr>
-        <tr><td>2024-01-28</td><td>31</td><td class="good">Yes</td></tr>
-      </tbody>
+      <tbody id="historyBody"></tbody>
     </table>
   </div>
 
 <script>
-  const prevDate = new Date(document.getElementById('prevDate').value);
-  const currInput = document.getElementById('currentDate');
-  const lengthEl = document.getElementById('length');
-  const rangeEl = document.getElementById('range');
+// ===== BASELINE HISTORY (REVERSE CHRONOLOGICAL) =====
+const history = [
+  { start: '2025-12-16', length: 33 },
+  { start: '2025-11-13', length: 26 },
+  { start: '2025-10-18', length: 31 },
+  { start: '2025-09-17', length: 35 },
+  { start: '2025-08-13', length: 30 },
+  { start: '2025-07-14', length: 24 },
+  { start: '2025-06-20', length: 26 },
+  { start: '2025-05-25', length: 32 },
+  { start: '2025-04-23', length: 27 },
+  { start: '2025-03-27', length: 32 },
+  { start: '2025-02-23', length: 26 },
+  { start: '2025-01-28', length: 25 },
+  { start: '2025-01-03', length: 30 },
+  { start: '2024-12-04', length: 28 },
+  { start: '2024-11-06', length: 31 },
+  { start: '2024-10-06', length: 24 },
+  { start: '2024-09-12', length: 26 },
+  { start: '2024-08-17', length: 27 },
+  { start: '2024-07-21', length: 29 },
+  { start: '2024-06-22', length: 24 },
+  { start: '2024-05-29', length: 33 },
+  { start: '2024-04-26', length: 31 },
+  { start: '2024-03-26', length: 28 },
+  { start: '2024-02-27', length: 30 },
+  { start: '2024-01-28', length: 31 }
+];
 
-  currInput.addEventListener('change', () => {
-    const curr = new Date(currInput.value);
-    const diff = Math.round((curr - prevDate) / (1000*60*60*24));
-    lengthEl.textContent = diff;
-    if (diff >= 21 && diff <= 35) {
-      rangeEl.textContent = 'Yes';
-      rangeEl.className = 'good';
-    } else {
-      rangeEl.textContent = 'No';
-      rangeEl.className = 'bad';
-    }
-  });
+// ===== ELEMENTS =====
+const prevInput = document.getElementById('prevDate');
+const currInput = document.getElementById('currentDate');
+const lengthEl = document.getElementById('length');
+const rangeEl = document.getElementById('range');
+const avgEl = document.getElementById('avg');
+const nextEl = document.getElementById('next');
+const tbody = document.getElementById('historyBody');
+
+// ===== RENDER HISTORY =====
+history.forEach(c => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${c.start}</td><td>${c.length}</td><td class="good">Yes</td>`;
+  tbody.appendChild(tr);
+});
+
+// ===== AUTO-FILL PREVIOUS CYCLE =====
+prevInput.value = history[0].start;
+
+// ===== CALCULATE AVERAGE =====
+const avg = Math.round(history.reduce((s, c) => s + c.length, 0) / history.length);
+avgEl.textContent = avg;
+
+// ===== PREDICT NEXT CYCLE =====
+const latest = new Date(history[0].start);
+latest.setDate(latest.getDate() + avg);
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const d = latest.getDate();
+const m = months[latest.getMonth()];
+nextEl.textContent = `${d} ${m}`; // formatted as: date Month().split('T')[0];
+
+// ===== HANDLE CURRENT DATE INPUT =====
+currInput.addEventListener('change', () => {
+  const prev = new Date(prevInput.value);
+  const curr = new Date(currInput.value);
+  const diff = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
+  lengthEl.textContent = diff;
+  if (diff >= 21 && diff <= 35) {
+    rangeEl.textContent = 'Yes';
+    rangeEl.className = 'good';
+  } else {
+    rangeEl.textContent = 'No';
+    rangeEl.className = 'bad';
+  }
+});
 </script>
 </body>
 </html>
