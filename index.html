@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menstrual Cycle Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f7f7fb; padding:40px; }
+    .card { max-width:500px; background:#fff; padding:24px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); }
+    h1 { font-size:20px; margin-bottom:20px; }
+    label { display:block; margin-top:12px; font-weight:bold; }
+    input { width:100%; padding:8px; margin-top:6px; border-radius:6px; border:1px solid #ccc; }
+    input[disabled] { background:#eee; }
+    table { width:100%; border-collapse:collapse; margin-top:16px; font-size:14px; }
+    th, td { border-bottom:1px solid #ddd; padding:6px; text-align:left; }
+    .good { color:green; font-weight:bold; }
+    .bad { color:red; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Menstrual Cycle Dashboard</h1>
+
+    <label>Previous Cycle Start Date (auto-filled)</label>
+    <input type="date" id="prevDate" value="2025-12-16" disabled />
+
+    <label>Current Cycle Start Date</label>
+    <input type="date" id="currentDate" />
+
+    <p style="margin-top:16px;">Cycle Length: <span id="length">—</span></p>
+    <p>Typical Range (21–35 days): <span id="range">—</span></p>
+
+    <h3>History</h3>
+    <table>
+      <thead>
+        <tr><th>Cycle Start</th><th>Length</th><th>Typical</th></tr>
+      </thead>
+      <tbody id="historyBody">
+        <tr><td>2025-12-16</td><td>33</td><td class="good">Yes</td></tr>
+        <tr><td>2025-11-13</td><td>26</td><td class="good">Yes</td></tr>
+        <tr><td>2025-10-18</td><td>31</td><td class="good">Yes</td></tr>
+        <tr><td>2025-09-17</td><td>35</td><td class="good">Yes</td></tr>
+        <tr><td>2025-08-13</td><td>30</td><td class="good">Yes</td></tr>
+        <tr><td>2025-07-14</td><td>24</td><td class="good">Yes</td></tr>
+        <tr><td>2025-06-20</td><td>26</td><td class="good">Yes</td></tr>
+        <tr><td>2025-05-25</td><td>32</td><td class="good">Yes</td></tr>
+        <tr><td>2025-04-23</td><td>27</td><td class="good">Yes</td></tr>
+        <tr><td>2025-03-27</td><td>32</td><td class="good">Yes</td></tr>
+        <tr><td>2025-02-23</td><td>26</td><td class="good">Yes</td></tr>
+        <tr><td>2025-01-28</td><td>25</td><td class="good">Yes</td></tr>
+        <tr><td>2025-01-03</td><td>30</td><td class="good">Yes</td></tr>
+        <tr><td>2024-12-04</td><td>28</td><td class="good">Yes</td></tr>
+        <tr><td>2024-11-06</td><td>31</td><td class="good">Yes</td></tr>
+        <tr><td>2024-10-06</td><td>24</td><td class="good">Yes</td></tr>
+        <tr><td>2024-09-12</td><td>26</td><td class="good">Yes</td></tr>
+        <tr><td>2024-08-17</td><td>27</td><td class="good">Yes</td></tr>
+        <tr><td>2024-07-21</td><td>29</td><td class="good">Yes</td></tr>
+        <tr><td>2024-06-22</td><td>24</td><td class="good">Yes</td></tr>
+        <tr><td>2024-05-29</td><td>33</td><td class="good">Yes</td></tr>
+        <tr><td>2024-04-26</td><td>31</td><td class="good">Yes</td></tr>
+        <tr><td>2024-03-26</td><td>28</td><td class="good">Yes</td></tr>
+        <tr><td>2024-02-27</td><td>30</td><td class="good">Yes</td></tr>
+        <tr><td>2024-01-28</td><td>31</td><td class="good">Yes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+<script>
+  const prevDate = new Date(document.getElementById('prevDate').value);
+  const currInput = document.getElementById('currentDate');
+  const lengthEl = document.getElementById('length');
+  const rangeEl = document.getElementById('range');
+
+  currInput.addEventListener('change', () => {
+    const curr = new Date(currInput.value);
+    const diff = Math.round((curr - prevDate) / (1000*60*60*24));
+    lengthEl.textContent = diff;
+    if (diff >= 21 && diff <= 35) {
+      rangeEl.textContent = 'Yes';
+      rangeEl.className = 'good';
+    } else {
+      rangeEl.textContent = 'No';
+      rangeEl.className = 'bad';
+    }
+  });
+</script>
+</body>
+</html>
